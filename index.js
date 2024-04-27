@@ -26,7 +26,7 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         const itemCollection = client.db('craftDB').collection('item');
-        const categoryCollection = client.db('craftDB').collection('category');
+        // const categoryCollection = client.db('craftDB').collection('category');
          
         // to find all (read)
         app.get('/item', async (req, res) => {
