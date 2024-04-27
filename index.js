@@ -9,8 +9,6 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// =====================
-
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.i8ufgdv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -28,8 +26,7 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         const itemCollection = client.db('craftDB').collection('item');
-        const userCollection = client.db('coffeeDB').collection('user');
-          
+         
         // to find all (read)
         app.get('/item', async (req, res) => {
             const cursor = itemCollection.find();
