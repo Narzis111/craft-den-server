@@ -26,8 +26,8 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         const itemCollection = client.db('craftDB').collection('item');
-        // const categoryCollection = client.db('craftDB').collection('category');
-         
+        const categoryCollection = client.db('craftDB').collection('category');
+
         // to find all (read)
         app.get('/item', async (req, res) => {
             const cursor = itemCollection.find();
@@ -42,6 +42,20 @@ async function run() {
             const result = await itemCollection.findOne(query);
             res.send(result);
         })
+        // to find category (read)
+        app.get('/category', async (req, res) => {
+            const cursor = categoryCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+           // to find single user (read)
+           app.get("/category/:catID", async (req, res) => {
+            console.log(req.params.catID);
+            const result = await categoryCollection.find({ catID: req.params.catID }).toArray();
+            res.send(result)
+          })
+
+  
         // to find single user (read)
         app.get("/myItems/:email", async (req, res) => {
             console.log(req.params.email);
