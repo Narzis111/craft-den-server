@@ -32,7 +32,7 @@ async function run() {
         app.get('/item', async (req, res) => {
             const cursor = itemCollection.find();
             const result = await cursor.toArray();
-            // res.send(result);
+            res.send(result);
         })
         // update korbo specific 1ta id ke tai find single params lagbe new lagbe
         // to find single (read)
