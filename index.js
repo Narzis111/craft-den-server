@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
         const itemCollection = client.db('craftDB').collection('item');
         const categoryCollection = client.db('craftDB').collection('category');
 
@@ -42,27 +42,49 @@ async function run() {
             const result = await itemCollection.findOne(query);
             res.send(result);
         })
+       
+    
         // to find category (read)
         app.get('/category', async (req, res) => {
             const cursor = categoryCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
-           // to find single user (read)
-           app.get("/category/:catID", async (req, res) => {
+        // to find single  (read)
+        app.get('/category/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await categoryCollection.findOne(query);
+            res.send(result);
+        })
+        app.get("/category/:catID", async (req, res) => {
             console.log(req.params.catID);
             const result = await categoryCollection.find({ catID: req.params.catID }).toArray();
             res.send(result)
-          })
+        })
+        // deatil
+        app.get('/detailcat/:id', async (req, res) => {
+            const id = req.params.id;
+            const clickedCategory = await categoryCollection.findOne({ _id: new ObjectId(id) });
+            const subcategory = clickedCategory.subcategory;
+            const categoryData = await categoryCollection.find({ subcategory }).toArray();
+            const itemsData = await itemCollection.find({ subcategory }).toArray();
 
-  
+            const combinedData = {
+                category: categoryData,
+                item: itemsData
+            };
+
+            res.json(combinedData);
+        })
+
         // to find single user (read)
         app.get("/myItems/:email", async (req, res) => {
             console.log(req.params.email);
             const result = await itemCollection.find({ email: req.params.email }).toArray();
             res.send(result)
-          })
-        
+        })
+
         //   create data
         app.post('/item', async (req, res) => {
             const newItem = req.body;
@@ -79,7 +101,7 @@ async function run() {
             const updateItem = req.body;
 
             const item = {
-          
+
                 $set: {
                     image: updateItem.image,
                     item_name: updateItem.item_name,
@@ -90,7 +112,7 @@ async function run() {
                     customization: updateItem.customization,
                     processing_time: updateItem.processing_time,
                     stockStatus: updateItem.stockStatus,
-                    
+
                 }
             }
 
@@ -108,7 +130,7 @@ async function run() {
         })
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
