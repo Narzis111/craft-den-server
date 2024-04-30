@@ -39,11 +39,11 @@ async function run() {
         app.get('/item/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
-            const result = await itemCollection.findOne(query);
+            const result = await categoryCollection.findOne(query) || await itemCollection.findOne(query);
             res.send(result);
         })
-       
-    
+
+
         // to find category (read)
         app.get('/category', async (req, res) => {
             const cursor = categoryCollection.find();
